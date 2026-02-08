@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Customer Churn Predictor</title>
+</head>
+<body>
+  <h2>Enter Customer Details</h2>
+  <form id="churnForm">
+    Tenure: <input type="number" id="tenure"><br>
+    Monthly Charges: <input type="number" id="charges"><br>
+    Contract (Month-to-month=1, else=0): <input type="number" id="contract"><br>
+    <button type="button" onclick="predict()">Predict</button>
+  </form>
+  <p id="result"></p>
+
+  <script>
+    async function predict() {
+      const response = await fetch('/predict', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          Tenure: document.getElementById('tenure').value,
+          MonthlyCharges: document.getElementById('charges').value,
+          Contract_Month_to_month: document.getElementById('contract').value
+        })
+      });
+      const result = await response.json();
+      document.getElementById('result').innerText =
+        "Prediction: " + result.churn_prediction +
+        " | Probability: " + result.churn_probability.toFixed(2);
+    }
+  </script>
+</body>
+</html>
